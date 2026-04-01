@@ -1,0 +1,157 @@
+<?php
+
+class TypeHelper
+{
+    public static function getTypeConfig()
+    {
+        return [
+            'councilor' => [
+                'name' => '議員',
+                'icon' => 'fas fa-fw fa-user-tie',
+                'cols' => [
+                    '議會代碼',
+                    '屆',
+                    '姓名',
+                    '黨籍',
+                    '選區名稱',
+                    '性別',
+                ],
+                'default_aggs' => [
+                    '屆',
+                    '黨籍',
+                    '性別',
+                ],
+                'item_features' => [
+                    'data' => '議員資料',
+                ],
+            ],
+            'council' => [
+                'name' => '議會',
+                'icon' => 'fas fa-fw fa-landmark',
+                'cols' => [
+                    '議會代碼',
+                    '議會名稱',
+                    '議會類別',
+                    '現存',
+                ],
+                'default_aggs' => [
+                    '議會類別',
+                    '現存',
+                ],
+                'item_features' => [
+                    'data' => '議會資料',
+                ],
+            ],
+        ];
+    }
+
+    public static function getColumns($type)
+    {
+        $config = self::getTypeConfig();
+        return $config[$type]['cols'] ?? [];
+    }
+
+    public static function getDataColumn($type)
+    {
+        $type = str_replace('_', '', $type);
+        return $type . 's';
+    }
+
+    public static function getDataByID($type, $id)
+    {
+        return CCAPI::apiQuery('/' . $type . '/' . rawurlencode($id), "抓取 {$type} 的 {$id} 資料");
+    }
+
+    public static function getData($data, $type)
+    {
+        return $data->{self::getDataColumn($type)} ?? [];
+    }
+
+    public static function getApiUrl($type)
+    {
+        $host = getenv('CCAPI_HOST') ?: 'all.cc.govapi.tw';
+        return 'https://' . $host . '/' . $type . 's';
+    }
+
+    public static function getCurrentFilter()
+    {
+        $query_string = $_SERVER['QUERY_STRING'] ?? '';
+        $terms = explode('&', $query_string);
+        $filter = [];
+        foreach ($terms as $term) {
+            if (strpos($term, '=') === false) {
+                continue;
+            }
+            list($k, $v) = array_map('urldecode', explode('=', $term, 2));
+            if ($k === 'filter') {
+                $filter[] = explode(':', $v, 2);
+            }
+        }
+        return $filter;
+    }
+
+    public static function getCurrentAgg($type)
+    {
+        $config = self::getTypeConfig();
+        $query_string = $_SERVER['QUERY_STRING'] ?? '';
+        $terms = explode('&', $query_string);
+        $agg = [];
+        foreach ($terms as $term) {
+            if (strpos($term, '=') === false) {
+                continue;
+            }
+            list($k, $v) = array_map('urldecode', explode('=', $term, 2));
+            if ($k === 'agg') {
+                $agg[] = $v;
+            }
+        }
+        if ($agg) {
+            return $agg;
+        }
+        return $config[$type]['default_aggs'] ?? [];
+    }
+
+    public static function getRecordList($data, $prefix = '')
+    {
+        if (is_scalar($data)) {
+            return [[
+                'key' => rtrim($prefix, '.'),
+                'value' => $data,
+            ]];
+        }
+        if (is_array($data)) {
+            $ret = [];
+            foreach ($data as $idx => $item) {
+                $ret = array_merge(
+                    $ret,
+                    self::getRecordList($item, rtrim($prefix, '.') . "[{$idx}].")
+                );
+            }
+            return $ret;
+        }
+        $ret = [];
+        foreach ($data as $k => $v) {
+            $ret = array_merge(
+                $ret,
+                self::getRecordList($v, "{$prefix}{$k}.")
+            );
+        }
+        return $ret;
+    }
+
+    public static function getItemFeatures($type)
+    {
+        $config = self::getTypeConfig();
+        $features = $config[$type]['item_features'] ?? [];
+        $features['rawdata'] = '原始資料';
+        return $features;
+    }
+
+    public static function getCollectionFeatures($type)
+    {
+        $config = self::getTypeConfig();
+        $features = $config[$type]['collection_features'] ?? [];
+        $features['table'] = '列表';
+        return $features;
+    }
+}
