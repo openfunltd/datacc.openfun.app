@@ -51,6 +51,7 @@ class TypeHelper
                     '議會名稱',
                     '議會類別',
                     '現存',
+                    '最新屆期代碼',
                 ],
                 'default_aggs' => [
                     '議會類別',
