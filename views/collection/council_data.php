@@ -15,7 +15,7 @@
                 <?php
                 $fields = [
                     '議會代碼', '議會名稱', '議會類別', '內政部行政區代碼',
-                    'ISO碼', '生效日期', '廢止日期', '現存',
+                    'ISO碼', '生效日期', '廢止日期', '現存', '最新屆期代碼',
                 ];
                 foreach ($fields as $f):
                     if (!isset($d->{$f})) continue;
@@ -27,6 +27,8 @@
                             <a href="<?= $this->escape($d->{$f}) ?>" target="_blank"><?= $this->escape($d->{$f}) ?></a>
                         <?php elseif ($f === '現存'): ?>
                             <?= $d->{$f} ? '✅ 現存' : '❌ 已廢止' ?>
+                        <?php elseif ($f === '最新屆期代碼' && $d->{$f}): ?>
+                            <a href="/collection/item/term/<?= $this->escape(rawurlencode($d->{$f})) ?>"><?= $this->escape($d->{$f}) ?></a>
                         <?php else: ?>
                             <?= $this->escape($d->{$f}) ?>
                         <?php endif; ?>
