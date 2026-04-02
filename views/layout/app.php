@@ -24,6 +24,33 @@
                 <div class="sidebar-brand-text mx-3">DataCC</div>
             </a>
             <hr class="sidebar-divider my-0">
+
+            <!-- 議會切換 -->
+            <?php
+                $current_code = CouncilHelper::getCurrentCode();
+                $current_name = CouncilHelper::getName($current_code);
+            ?>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCouncil"
+                   aria-expanded="false" aria-controls="collapseCouncil">
+                    <i class="fas fa-fw fa-landmark"></i>
+                    <span class="text-truncate" style="max-width:130px; display:inline-block; vertical-align:middle;"><?= $this->escape($current_name) ?></span>
+                    <i class="fas fa-caret-down ml-1"></i>
+                </a>
+                <div id="collapseCouncil" class="collapse" aria-labelledby="headingCouncil" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded" style="max-height:300px;overflow-y:auto;">
+                        <h6 class="collapse-header">切換議會</h6>
+                        <?php foreach (CouncilHelper::getAll() as $code => $name): ?>
+                            <a class="collapse-item <?= $code === $current_code ? 'active' : '' ?>"
+                               href="<?= $this->escape(CouncilHelper::getSwitchUrl($code)) ?>">
+                                <?= $this->escape($name) ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </li>
+
+            <hr class="sidebar-divider">
             <li class="nav-item <?= $this->if($this->type == 'dashboard', 'active') ?>">
                 <a class="nav-link" href="/">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
