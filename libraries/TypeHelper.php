@@ -25,6 +25,24 @@ class TypeHelper
                     'data' => '議員資料',
                 ],
             ],
+            'term' => [
+                'name' => '屆',
+                'icon' => 'fas fa-fw fa-calendar-alt',
+                'cols' => [
+                    '議會代碼',
+                    '屆次',
+                    '就職日',
+                    '任期屆滿日',
+                    '現任',
+                ],
+                'default_aggs' => [
+                    '議會代碼',
+                    '現任',
+                ],
+                'item_features' => [
+                    'data' => '屆期資料',
+                ],
+            ],
             'council' => [
                 'name' => '議會',
                 'icon' => 'fas fa-fw fa-landmark',
