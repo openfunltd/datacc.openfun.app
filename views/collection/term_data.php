@@ -16,7 +16,7 @@
         <table class="table table-sm">
             <tbody>
                 <?php
-                $fields = ['議會代碼', '屆次', '就職日', '任期屆滿日', '備註'];
+                $fields = ['議會代碼', '屆次', '投票日', '就職日', '任期屆滿日', '備註'];
                 foreach ($fields as $f):
                     if (!isset($d->{$f}) || $d->{$f} === '' || $d->{$f} === null) continue;
                 ?>
