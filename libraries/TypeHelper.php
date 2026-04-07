@@ -9,17 +9,34 @@ class TypeHelper
                 'name' => '議員',
                 'icon' => 'fas fa-fw fa-user-tie',
                 'cols' => [
-                    '議會代碼',
-                    '屆',
-                    '姓名',
-                    '黨籍',
-                    '選區名稱',
-                    '性別',
+                    'all' => [
+                        '議會代碼',
+                        '屆',
+                        '姓名',
+                        '職稱',
+                        '黨籍',
+                        '選區名稱',
+                        '性別',
+                    ],
+                    'single' => [
+                        '屆',
+                        '姓名',
+                        '職稱',
+                        '黨籍',
+                        '性別',
+                    ],
                 ],
                 'default_aggs' => [
-                    '屆',
-                    '黨籍',
-                    '性別',
+                    'all' => [
+                        '議會代碼',
+                        '職稱',
+                        '黨籍',
+                    ],
+                    'single' => [
+                        '職稱',
+                        '黨籍',
+                        '性別',
+                    ],
                 ],
                 'item_features' => [
                     'data' => '議員資料',
@@ -68,7 +85,13 @@ class TypeHelper
     public static function getColumns($type)
     {
         $config = self::getTypeConfig();
-        return $config[$type]['cols'] ?? [];
+        $cols = $config[$type]['cols'] ?? [];
+        // 支援依全國/單一議會回傳不同欄位
+        if (isset($cols['all'])) {
+            $is_all = (CouncilHelper::getCurrentCode() === 'all');
+            return $is_all ? $cols['all'] : $cols['single'];
+        }
+        return $cols;
     }
 
     public static function getDataColumn($type)
@@ -128,7 +151,13 @@ class TypeHelper
         if ($agg) {
             return $agg;
         }
-        return $config[$type]['default_aggs'] ?? [];
+        $default = $config[$type]['default_aggs'] ?? [];
+        // 支援依全國/單一議會回傳不同預設 agg
+        if (isset($default['all'])) {
+            $is_all = (CouncilHelper::getCurrentCode() === 'all');
+            return $is_all ? $default['all'] : $default['single'];
+        }
+        return $default;
     }
 
     public static function getRecordList($data, $prefix = '')
