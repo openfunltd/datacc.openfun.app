@@ -195,7 +195,7 @@ $(document).ready(function() {
                     var dom = $(tmpl);
                     dom.find('.agg-name').text(agg_data.agg);
                     agg_dom[agg_data.agg] = dom;
-                    if (['屆'].indexOf(agg_data.agg) != -1) {
+                    if (['屆次'].indexOf(agg_data.agg) != -1) {
                         agg_data.buckets.sort(function(a, b){
                             return b[agg_data.agg] - a[agg_data.agg];
                         });

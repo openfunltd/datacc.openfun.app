@@ -14,8 +14,8 @@
             <tbody>
                 <?php
                 $fields = [
-                    '議會代碼', '議會名稱', '議會類別', '內政部行政區代碼',
-                    'ISO碼', '生效日期', '廢止日期', '現存', '最新屆期代碼',
+                    '代碼', '議會名稱', '議會類別', '內政部行政區代碼',
+                    'ISO碼', '生效日期', '廢止日期', '現存', '維基條目', 'wikidata_id', '最新屆期代碼',
                 ];
                 foreach ($fields as $f):
                     if (!isset($d->{$f})) continue;
@@ -38,7 +38,7 @@
             </tbody>
         </table>
         <?php if (!empty($d->{'維基條目'})): ?>
-        <a href="<?= $this->escape($d->{'維基條目'}) ?>" target="_blank" class="btn btn-sm btn-outline-secondary">
+        <a href="<?= $this->escape($d->{'維基條目'}) ?>" target="_blank" class="btn btn-sm btn-outline-secondary mt-2">
             <i class="fas fa-external-link-alt"></i> 維基百科
         </a>
         <?php endif; ?>
