@@ -18,6 +18,21 @@ class CollectionController extends MiniEngine_Controller
         }
     }
 
+    public function completenessAction($cc_code = null)
+    {
+        $this->view->type = 'completeness';
+        if ($cc_code) {
+            // 層 2：單一議會屆期細圖
+            $this->view->cc_code = $cc_code;
+            $result = CCAPI::apiQuery('/completeness/' . rawurlencode($cc_code), '議會完整度資料');
+            $this->view->council = $result->data ?? null;
+        } else {
+            // 層 1：全部議會大圖
+            $result = CCAPI::apiQuery('/completenesses?limit=50', '所有議會完整度資料');
+            $this->view->councils = $result->completenesses ?? [];
+        }
+    }
+
     public function itemAction($type, $id, $tab = null)
     {
         $this->view->type = $type;

@@ -67,6 +67,14 @@
                     </a>
                 </li>
             <?php } ?>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">工具</div>
+            <li class="nav-item <?= $this->if($this->type == 'completeness', 'active') ?>">
+                <a class="nav-link" href="/collection/completeness">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span>資料完整度</span>
+                </a>
+            </li>
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
