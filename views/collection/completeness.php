@@ -1,15 +1,31 @@
 <?php
-// Helper: render count + status badge
-function completeness_cell($count, $status) {
-    if ($status === 'ok') {
-        $badge = '<span class="badge badge-success ml-1">ok</span>';
-    } elseif ($status === 'incomplete') {
-        $badge = '<span class="badge badge-warning ml-1">不完整</span>';
-    } else {
-        $badge = '<span class="badge badge-danger ml-1">缺</span>';
+// Helper: render terms_with_data/total_terms + status badge (for councilor/session)
+function completeness_cell($type_obj, $label = '') {
+    $with_data  = $type_obj->terms_with_data ?? null;
+    $total      = $type_obj->total_terms ?? null;
+    $status     = $type_obj->status ?? 'missing';
+
+    if (!is_null($with_data) && !is_null($total)) {
+        // 議員/會期：顯示 有資料屆/總屆
+        if ($status === 'ok') {
+            $color = 'success'; $badge_text = 'OK';
+        } elseif ($status === 'incomplete') {
+            $color = 'warning'; $badge_text = "{$with_data}/{$total}";
+        } else {
+            $color = 'danger'; $badge_text = '缺';
+        }
+        $fraction = $status !== 'ok' ? "<small class=\"text-muted\">{$with_data}/{$total} 屆</small> " : '';
+        return $fraction . '<span class="badge badge-' . $color . '">' . $badge_text . '</span>';
     }
-    $color = ($status === 'ok') ? 'text-success' : (($status === 'incomplete') ? 'text-warning' : 'text-danger');
-    return '<span class="' . $color . ' font-weight-bold">' . $count . '</span>' . $badge;
+
+    // 屆（只有 total + status）
+    $total_val = $type_obj->total ?? 0;
+    if ($status === 'ok') {
+        return '<span class="text-success font-weight-bold">' . $total_val . '</span> <span class="badge badge-success">ok</span>';
+    } elseif ($status === 'incomplete') {
+        return '<span class="text-warning font-weight-bold">' . $total_val . '</span> <span class="badge badge-warning">不完整</span>';
+    }
+    return '<span class="text-danger font-weight-bold">' . $total_val . '</span> <span class="badge badge-danger">缺</span>';
 }
 ?>
 <?php $this->yield_start('content') ?>
@@ -58,9 +74,9 @@ $defunct = array_filter($this->councils ?? [], fn($c) => !($c->{'現存'} ?? fal
                         </a>
                         <small class="text-muted ml-1"><?= htmlspecialchars($c->{'代碼'}) ?></small>
                     </td>
-                    <td class="text-center"><?= completeness_cell($types->term->total, $types->term->status) ?></td>
-                    <td class="text-center"><?= completeness_cell($types->councilor->total, $types->councilor->status) ?></td>
-                    <td class="text-center"><?= completeness_cell($types->session->total, $types->session->status) ?></td>
+                    <td class="text-center"><?= completeness_cell($types->term) ?></td>
+                    <td class="text-center"><?= completeness_cell($types->councilor) ?></td>
+                    <td class="text-center"><?= completeness_cell($types->session) ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -94,9 +110,9 @@ $defunct = array_filter($this->councils ?? [], fn($c) => !($c->{'現存'} ?? fal
                         </a>
                         <small class="text-muted ml-1"><?= htmlspecialchars($c->{'代碼'}) ?></small>
                     </td>
-                    <td class="text-center"><?= completeness_cell($types->term->total, $types->term->status) ?></td>
-                    <td class="text-center"><?= completeness_cell($types->councilor->total, $types->councilor->status) ?></td>
-                    <td class="text-center"><?= completeness_cell($types->session->total, $types->session->status) ?></td>
+                    <td class="text-center"><?= completeness_cell($types->term) ?></td>
+                    <td class="text-center"><?= completeness_cell($types->councilor) ?></td>
+                    <td class="text-center"><?= completeness_cell($types->session) ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
