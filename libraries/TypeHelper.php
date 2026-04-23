@@ -61,8 +61,34 @@ class TypeHelper
                     'data' => '屆期資料',
                 ],
             ],
+            'committee' => [
+                'name' => '委員會',
+                'icon' => 'fas fa-fw fa-users',
+                'cols' => [
+                    'all' => [
+                        '議會代碼',
+                        '名稱',
+                        '類別',
+                    ],
+                    'single' => [
+                        '名稱',
+                        '類別',
+                    ],
+                ],
+                'default_aggs' => [
+                    'all' => [
+                        '議會代碼',
+                        '類別',
+                    ],
+                    'single' => [
+                        '類別',
+                    ],
+                ],
+                'item_features' => [
+                    'data' => '委員會資料',
+                ],
+            ],
             'council' => [
-                'name' => '議會',
                 'icon' => 'fas fa-fw fa-landmark',
                 'cols' => [
                     '代碼',
