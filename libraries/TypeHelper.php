@@ -89,6 +89,7 @@ class TypeHelper
                 ],
             ],
             'council' => [
+                'name' => '議會',
                 'icon' => 'fas fa-fw fa-landmark',
                 'cols' => [
                     '代碼',
